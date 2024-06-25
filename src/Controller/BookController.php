@@ -4,20 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Repository\AuthorRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Entity;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BookController extends AbstractController
 {
@@ -47,17 +45,24 @@ class BookController extends AbstractController
     }
 
     #[Route('/api/books', name: 'createBook', methods:['POST'])]
-    public function createBook(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, AuthorRepository $authorRepository): JsonResponse 
+    public function createBook(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, AuthorRepository $authorRepository, ValidatorInterface $validator): JsonResponse 
     {
         $book = $serializer->deserialize($request->getContent(), Book::class, 'json');
+
+        $errors = $validator->validate($book);
+
+        if ($errors->count() >0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+        
+        $em ->persist($book);
+        $em->flush();
         
         $content = $request->toArray();
         $idAuthor = $content['idAuthor'] ?? -1;
         
         $book->setAuthor($authorRepository->find($idAuthor));
         
-        $em ->persist($book);
-        $em->flush();
 
         $jsonBook = $serializer->serialize($book, 'json', ['groups' => 'getBooks']);
 

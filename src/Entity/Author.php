@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
@@ -23,12 +25,14 @@ class Author
 
     #[ORM\Column(length: 255)]
     #[Groups(["getBooks"])]
+    #[NotBlank(message:"Le nom de l'auteur est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom doit faire au moins {{limit}} caractères", maxMessage: "Le nom ne peut pas faire plus de {{limit}} caractères")]
     private ?string $lastName = null;
 
     /**
      * @var Collection<int, Book>
      */
-    #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author')]
+    #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'author', cascade:['remove'])]
     private Collection $Books;
 
     public function __construct()

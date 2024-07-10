@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Attributes as OA;
 
 use JMS\Serializer\Serializer;
 
@@ -55,6 +56,7 @@ class AuthorController extends AbstractController
     * @param Request $request
     * @return JsonResponse
     */
+    #[OA\Tag(name: 'Authors')]
     #[Route('/api/author', name: 'author', methods: ['GET'])]
         public function getAllAuthor(AuthorRepository $authorRepository, SerializerInterface $serializer, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
@@ -92,6 +94,7 @@ class AuthorController extends AbstractController
     * @param SerializerInterface $serializer
     * @return JsonResponse
     */
+    #[OA\Tag(name: 'Authors')]
     #[Route('/api/author/{id}', name:'detailAuthor', methods: ['GET'])]
     public function getDetailBook(SerializerInterface $serializer, Author $author): JsonResponse
     {
@@ -117,6 +120,7 @@ class AuthorController extends AbstractController
     * @param Author $author
     * @return JsonResponse
     */
+    #[OA\Tag(name: 'Authors')]
     #[Route ('/api/author/{id}', name: 'deleteAuthor', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un auteur')]
         public function deleteAuthor(Author $author, EntityManagerInterface $em, TagAwareCacheInterface $cachePool): JsonResponse
@@ -158,6 +162,7 @@ class AuthorController extends AbstractController
     * @param Request $request
     * @return JsonResponse
     */
+    #[OA\Tag(name: 'Authors')]
     #[Route('/api/author', name:'createAuthor', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous n\'avez pas les droits suffisants pour créer un auteur')]
     public function createAuthor(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
@@ -211,6 +216,7 @@ class AuthorController extends AbstractController
     * @param Request $request
     * @return JsonResponse
     */
+    #[OA\Tag(name: 'Authors')]
     #[Route("/api/author/{id}", name:"updateAuthor", methods: ["PUT"])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour modifier un livre')]
 

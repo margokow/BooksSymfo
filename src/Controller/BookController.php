@@ -21,41 +21,31 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 class BookController extends AbstractController
 {
-    /**
-    * Cette méthode permet de récupérer l'ensemble des livres.
-    *
-    * @OA\Response(
-    *     response=200,
-    *     description="Retourne la liste des livres",
-    *     @OA\JsonContent(
-    *        type="array",
-    *        @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"}))
-    *     )
-    * )
-    * @OA\Parameter(
-    *     name="page",
-    *     in="query",
-    *     description="La page que l'on veut récupérer",
-    *     @OA\Schema(type="int")
-    * )
-    *
-    * @OA\Parameter(
-    *     name="limit",
-    *     in="query",
-    *     description="Le nombre d'éléments que l'on veut récupérer",
-    *     @OA\Schema(type="int")
-    * )
-    * @OA\Tag(name="Books")
-    *
-    * @param BookRepository $bookRepository
-    * @param SerializerInterface $serializer
-    * @param Request $request
-    * @return JsonResponse
-    */
+    #[OA\Response(
+        response: 200,
+        description: 'Cette méthode permet de récupérer les livres',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['getBooks']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        in: 'query',
+        description: "La page que l'on veut récupérer",
+        schema: new OA\Schema(type: 'int')
+    )]
+    #[OA\Parameter(
+        name: 'limit',
+        in: 'query',
+        description: "Le nombre d'éléments que l'on veut récupérer",
+        schema: new OA\Schema(type: 'int')
+    )]
+    #[OA\Tag(name: 'Books')]
     #[Route('/api/books', name: 'books', methods: ['GET'])]
     public function getAllBooks(BookRepository $bookRepository, SerializerInterface $serializer, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
@@ -78,25 +68,16 @@ class BookController extends AbstractController
         // $jsonBookList = $serializer->serialize($bookList,'json', ['groups' => 'getBooks']);
         return new JsonResponse($jsonBookList, Response::HTTP_OK,[], true);
     }
-/**
-    * Cette méthode permet de rechercher un livre par son ID.
-    *
-    * @OA\Response(
-    *     response=200,
-    *     description="Retourne un livre",
-    *     @OA\JsonContent(
-    *        type="array",
-    *        @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"}))
-    *     )
-    * )
-    * 
-    * @OA\Tag(name="Books")
-    *
-    * @param Book $book
-    * @param SerializerInterface $serializer
-    * @return JsonResponse
-    */
 
+    #[OA\Response(
+        response: 200,
+        description: 'Cette méthode permet de récupérer un livre',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['getBooks']))
+        )
+    )]
+    #[OA\Tag(name: 'Books')]
     #[Route('/api/books/{id}', name:'detailBook', methods: ['GET'])]
         public function getDetailBook(SerializerInterface $serializer, Book $book): JsonResponse
     {
@@ -106,24 +87,16 @@ class BookController extends AbstractController
         // $jsonBook = $serializer->serialize($book ,'json', ['groups' => 'getBooks']);
         return new JsonResponse($jsonBook, Response::HTTP_OK,[], true);
     }
-    /**
-    * Cette méthode permet de supprimer un livre par son ID.
-    *
-    * @OA\Response(
-    *     response=200,
-    *     description="Supprime un livre",
-    *     @OA\JsonContent(
-    *        type="array",
-    *        @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"}))
-    *     )
-    * )
-    * 
-    * @OA\Tag(name="Books")
-    *
-    * @param Book $book
-    * @return JsonResponse
-    */
 
+    #[OA\Response(
+        response: 200,
+        description: 'Cette méthode permet de supprimer un livre',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['getBooks']))
+        )
+    )]
+    #[OA\Tag(name: 'Books')]
     #[Route ('/api/books/{id}', name: 'deleteBook', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un livre')]
         public function deleteBook(Book $book, EntityManagerInterface $em, TagAwareCacheInterface $cachePool): JsonResponse
@@ -135,41 +108,15 @@ class BookController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-    * Cette méthode permet de créer un livre.
-    *
-    * @OA\Response(
-    *     response=200,
-    *     description="Crée un livre",
-    *     @OA\JsonContent(
-    *        type="array",
-    *        @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"}))
-    *     )
-    * )
-    *
-    *  @OA\RequestBody(
-    *     required=true,
-    *     @OA\JsonContent(
-    *         example={
-    *             "title": "title",
-    *             "coverText": "coverText",
-    *             "comment": "comment",
-    *             "idAuthor": "35"
-    *         },
-    *           type="array",
-    *           @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"})),
-    *     )
-    * )
-    * @OA\Tag(name="Books")
-    *
-    * @param AuthorRepository $authorRepository
-    * @param SerializerInterface $serializer
-    * @param EntityManagerInterface $em
-    * @param UrlGeneratorInterface $urlGenerator
-    * @param Request $request
-    * @return JsonResponse
-    */
-
+    #[OA\Response(
+        response: 200,
+        description: 'Cette méthode permet de créer un livre',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['getBooks']))
+        )
+    )]
+    #[OA\Tag(name: 'Books')]
     #[Route('/api/books', name:'createBook', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous n\'avez pas les droits suffisants pour créer un livre')]
         public function createBook(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, AuthorRepository $authorRepository, ValidatorInterface $validator): JsonResponse
@@ -194,40 +141,15 @@ class BookController extends AbstractController
         return new JsonResponse($jsonBook, Response::HTTP_CREATED, ["Location" => $location], true);
     }
 
-     /**
-    * Cette méthode permet de modifier un livre.
-    *
-    * @OA\Response(
-    *     response=200,
-    *     description="Modifie un livre",
-    *     @OA\JsonContent(
-    *        type="array",
-    *        @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"}))
-    *     )
-    * )
-    *
-    *  @OA\RequestBody(
-    *     required=true,
-    *     @OA\JsonContent(
-    *         example={
-    *             "title": "title",
-    *             "coverText": "coverText",
-    *             "comment": "comment",
-    *             "idAuthor": "35"
-    *         },
-    *           type="array",
-    *           @OA\Items(ref=@Model(type=Book::class,groups={"getBooks"})),
-    *     )
-    * )
-    * @OA\Tag(name="Books")
-    *
-    * @param AuthorRepository $authorRepository
-    * @param SerializerInterface $serializer
-    * @param EntityManagerInterface $em
-    * @param Request $request
-    * @return JsonResponse
-    */
-
+    #[OA\Response(
+        response: 200,
+        description: 'Cette méthode permet de modifier un livre',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Book::class, groups: ['getBooks']))
+        )
+    )]
+    #[OA\Tag(name: 'Books')]
     #[Route("/api/books/{id}", name:"updateBook", methods: ["PUT"])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour modifier un livre')]
         public function updateBook(Request $request, SerializerInterface $serializer, Book $currentBook, EntityManagerInterface $em, AuthorRepository $authorRepository, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse

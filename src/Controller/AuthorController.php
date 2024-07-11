@@ -57,7 +57,7 @@ class AuthorController extends AbstractController
     * @return JsonResponse
     */
     #[OA\Tag(name: 'Authors')]
-    #[Route('/api/author', name: 'author', methods: ['GET'])]
+    #[Route('/api/authors', name: 'author', methods: ['GET'])]
         public function getAllAuthor(AuthorRepository $authorRepository, SerializerInterface $serializer, Request $request, TagAwareCacheInterface $cache): JsonResponse
     {
         $page = $request->get('page', 1);
@@ -95,7 +95,7 @@ class AuthorController extends AbstractController
     * @return JsonResponse
     */
     #[OA\Tag(name: 'Authors')]
-    #[Route('/api/author/{id}', name:'detailAuthor', methods: ['GET'])]
+    #[Route('/api/authors/{id}', name:'detailAuthor', methods: ['GET'])]
     public function getDetailBook(SerializerInterface $serializer, Author $author): JsonResponse
     {
         $context = SerializationContext::create()->setGroups(['getAuthors']);
@@ -121,7 +121,7 @@ class AuthorController extends AbstractController
     * @return JsonResponse
     */
     #[OA\Tag(name: 'Authors')]
-    #[Route ('/api/author/{id}', name: 'deleteAuthor', methods: ['DELETE'])]
+    #[Route ('/api/authors/{id}', name: 'deleteAuthor', methods: ['DELETE'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un auteur')]
         public function deleteAuthor(Author $author, EntityManagerInterface $em, TagAwareCacheInterface $cachePool): JsonResponse
     {
@@ -163,7 +163,7 @@ class AuthorController extends AbstractController
     * @return JsonResponse
     */
     #[OA\Tag(name: 'Authors')]
-    #[Route('/api/author', name:'createAuthor', methods: ['POST'])]
+    #[Route('/api/authors', name:'createAuthor', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message:'Vous n\'avez pas les droits suffisants pour créer un auteur')]
     public function createAuthor(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
     {
@@ -217,7 +217,7 @@ class AuthorController extends AbstractController
     * @return JsonResponse
     */
     #[OA\Tag(name: 'Authors')]
-    #[Route("/api/author/{id}", name:"updateAuthor", methods: ["PUT"])]
+    #[Route("/api/authors/{id}", name:"updateAuthor", methods: ["PUT"])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour modifier un livre')]
 
     public function updateAuthor(Request $request, SerializerInterface $serializer, Author $currentAuthor, EntityManagerInterface $em, AuthorRepository $authorRepository, ValidatorInterface $validator, TagAwareCacheInterface $cache): JsonResponse
